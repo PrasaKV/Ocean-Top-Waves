@@ -1,11 +1,11 @@
 /* General Styling */
 :root {
-	--primary-color: #00a896;
-	--secondary-color: #f0f2f5;
+	--primary-color: #0d6efd;
+	--secondary-color: #f8f9fa;
 	--accent-color: #ffc107;
-	--text-color: #333333;
+	--text-color: #212529;
 	--light-text: #ffffff;
-	--dark-bg: #2c3e50;
+	--dark-bg: #343a40;
 }
 
 * {
@@ -19,7 +19,7 @@ html {
 }
 
 body {
-	font-family: "Lato", sans-serif;
+	font-family: "Roboto", sans-serif;
 	color: var(--text-color);
 	line-height: 1.6;
 	background: var(--light-text);
@@ -28,7 +28,7 @@ body {
 h1,
 h2,
 h3 {
-	font-family: "Poppins", sans-serif;
+	font-family: "Montserrat", sans-serif;
 	font-weight: 700;
 }
 
@@ -45,6 +45,21 @@ h3 {
 	justify-content: center;
 	align-items: center;
 	transition: opacity 0.5s ease;
+}
+
+.loader-inner {
+	width: 80px;
+	height: 80px;
+	border: 8px solid var(--primary-color);
+	border-radius: 50%;
+	border-top-color: transparent;
+	animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+	to {
+		transform: rotate(360deg);
+	}
 }
 
 /* Header */
@@ -96,7 +111,7 @@ nav ul li a:hover {
 	border-bottom-color: var(--accent-color);
 }
 
-/* Hero Carousel (Modified from provided code) */
+/* Hero Carousel */
 .hero-carousel {
 	height: 100vh;
 	width: 100%;
@@ -108,40 +123,23 @@ nav ul li a:hover {
 .hero-carousel .slide {
 	height: 100%;
 	width: 100%;
+	position: relative;
 }
 
 .hero-carousel .item {
-	width: 200px;
-	height: 300px;
-	position: absolute;
-	top: 50%;
-	transform: translateY(-50%);
-	border-radius: 20px;
-	background-size: cover;
-	background-position: center;
-	transition: all 0.5s ease-in-out;
-	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-}
-
-.slide .item:nth-child(1),
-.slide .item:nth-child(2) {
-	top: 0;
-	left: 0;
 	width: 100%;
 	height: 100%;
-	border-radius: 0;
-	box-shadow: none;
+	position: absolute;
+	top: 0;
+	left: 0;
+	background-size: cover;
+	background-position: center;
+	transition: opacity 1s ease-in-out;
+	opacity: 0;
 }
 
-.slide .item:nth-child(3) {
-	left: 75%;
-}
-.slide .item:nth-child(4) {
-	left: calc(75% + 220px);
-}
-.slide .item:nth-child(n + 5) {
-	left: calc(75% + 440px);
-	opacity: 0;
+.hero-carousel .item.active {
+	opacity: 1;
 }
 
 .item .content {
@@ -151,13 +149,8 @@ nav ul li a:hover {
 	width: 80%;
 	max-width: 550px;
 	transform: translateY(-50%);
-	display: none;
 	text-align: left;
 	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-}
-
-.slide .item:nth-child(2) .content {
-	display: block;
 }
 
 .content .name {
@@ -331,7 +324,7 @@ nav ul li a:hover {
 }
 
 .btn:hover {
-	background-color: #008f7a;
+	background-color: #0b5ed7;
 	transform: scale(1.05);
 }
 

@@ -86,21 +86,45 @@ document.addEventListener("DOMContentLoaded", () => {
 
 	// --- Carousel Logic ---
 	function initializeCarousel() {
-		const nextBtn = document.querySelector(".next");
-		const prevBtn = document.querySelector(".prev");
-		if (!nextBtn || !prevBtn) return;
+		const items = document.querySelectorAll(".hero-carousel .item");
+		if (items.length === 0) return;
 
-		nextBtn.addEventListener("click", () => {
-			let items = document.querySelectorAll(".item");
-			if (items.length > 1)
-				document.querySelector(".slide").appendChild(items[0]);
+		let current = 0;
+		let autoSlide = setInterval(nextSlide, 5000);
+
+		function showSlide(index) {
+			items.forEach((item, i) => {
+				item.classList.remove("active");
+				if (i === index) {
+					item.classList.add("active");
+				}
+			});
+			current = index;
+		}
+
+		function nextSlide() {
+			current = (current + 1) % items.length;
+			showSlide(current);
+		}
+
+		function prevSlide() {
+			current = (current - 1 + items.length) % items.length;
+			showSlide(current);
+		}
+
+		document.querySelector(".next").addEventListener("click", () => {
+			nextSlide();
+			clearInterval(autoSlide);
+			autoSlide = setInterval(nextSlide, 5000);
 		});
 
-		prevBtn.addEventListener("click", () => {
-			let items = document.querySelectorAll(".item");
-			if (items.length > 1)
-				document.querySelector(".slide").prepend(items[items.length - 1]);
+		document.querySelector(".prev").addEventListener("click", () => {
+			prevSlide();
+			clearInterval(autoSlide);
+			autoSlide = setInterval(nextSlide, 5000);
 		});
+
+		showSlide(0); // Show the first slide initially
 	}
 
 	// --- Scroll Animation Logic ---
