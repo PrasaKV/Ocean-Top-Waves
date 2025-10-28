@@ -1,0 +1,83 @@
+<?php
+// This auth-check must be the very first thing on the page
+require_once 'includes/auth-check.php';
+
+// Now, include layout files
+require_once 'includes/header.php';
+require_once 'includes/sidebar.php';
+?>
+
+<main class="main-content">
+  <!-- Dashboard Panel -->
+  <section id="dashboard" class="content-panel active">
+    <h1>Welcome, <?php echo htmlspecialchars($_SESSION['username']); ?>!</h1>
+    <p>Select a section from the sidebar to manage your website's content.</p>
+  </section>
+
+  <!-- Carousel Management Panel (Future implementation) -->
+  <section id="carousel" class="content-panel">
+    <h2>Manage Carousel</h2>
+    <p>This feature is under development. You can manage carousel slides directly in the database for now.</p>
+  </section>
+
+  <!-- Surfing Packages Panel -->
+  <section id="packages" class="content-panel">
+    <h2>Manage Surfing Packages</h2>
+    <div id="packages-list">
+      <p>Loading packages...</p>
+    </div>
+    <hr>
+    <h3>Add / Edit Package</h3>
+    <form id="package-form">
+      <input type="hidden" id="package-id">
+      <div class="form-group">
+        <label for="package-name">Package Name</label>
+        <input type="text" id="package-name" required>
+      </div>
+      <div class="form-group">
+        <label for="package-price">Price</label>
+        <input type="number" id="package-price" step="0.01" min="0" required>
+      </div>
+      <div class="form-group">
+        <label for="package-features">Features (comma-separated, e.g., Feature 1, Feature 2)</label>
+        <textarea id="package-features" required></textarea>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn-admin">Save Package</button>
+        <button type="button" id="clear-package-form" class="btn-secondary">Clear Form</button>
+      </div>
+    </form>
+  </section>
+
+  <!-- Gallery Management Panel -->
+  <section id="gallery" class="content-panel">
+    <h2>Manage Gallery</h2>
+    <form id="gallery-upload-form">
+      <h3>Upload New Image</h3>
+      <div class="form-group">
+        <label for="gallery-image-url">Image URL</label>
+        <input type="text" id="gallery-image-url" placeholder="https://images.unsplash.com/..." required>
+      </div>
+      <div class="form-group">
+        <label for="gallery-caption">Caption (Optional)</label>
+        <input type="text" id="gallery-caption">
+      </div>
+      <div class="form-group">
+        <label for="gallery-category">Category</label>
+        <select id="gallery-category" required>
+          <option value="surfing">Surfing</option>
+          <option value="tours">Tours</option>
+          <option value="shop">Shop</option>
+        </select>
+      </div>
+      <button type="submit" class="btn-admin">Add Image</button>
+    </form>
+    <hr>
+    <h3>Existing Images</h3>
+    <div id="gallery-list" class="gallery-admin-grid">
+      <p>Loading gallery...</p>
+    </div>
+  </section>
+</main>
+
+<?php require_once 'includes/footer.php'; ?>

@@ -1,0 +1,158 @@
+/* Gallery Page Specific Styles */
+.header-static {
+	position: static;
+	background: var(--dark-bg);
+}
+
+.gallery-main {
+	padding: 2rem 5%;
+	max-width: 1200px;
+	margin: 0 auto;
+}
+
+.gallery-section h1 {
+	text-align: center;
+	font-size: 2.8rem;
+	margin-bottom: 2rem;
+	color: var(--text-color);
+}
+
+.filter-buttons {
+	text-align: center;
+	margin-bottom: 2.5rem;
+}
+
+.filter-btn {
+	background: none;
+	border: 2px solid var(--primary-color);
+	color: var(--primary-color);
+	padding: 0.6rem 1.8rem;
+	border-radius: 50px;
+	margin: 0 0.5rem;
+	cursor: pointer;
+	font-weight: bold;
+	font-size: 1rem;
+	transition: all 0.3s ease;
+}
+
+.filter-btn:hover,
+.filter-btn.active {
+	background: var(--primary-color);
+	color: #fff;
+	transform: scale(1.05);
+}
+
+.gallery-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+	gap: 1.5rem;
+}
+
+.gallery-item {
+	position: relative;
+	overflow: hidden;
+	border-radius: 10px;
+	cursor: pointer;
+	box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+	height: 250px;
+}
+
+.gallery-item img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	display: block;
+	transition: transform 0.4s ease, filter 0.4s ease;
+}
+
+.gallery-item:hover img {
+	transform: scale(1.1);
+	filter: brightness(0.7);
+}
+
+.gallery-item .overlay {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+	color: #fff;
+	padding: 2rem 1rem 1rem;
+	transform: translateY(100%);
+	transition: transform 0.4s ease, opacity 0.4s ease;
+	font-size: 1rem;
+	opacity: 0;
+	text-align: center;
+}
+
+.gallery-item:hover .overlay {
+	transform: translateY(0);
+	opacity: 1;
+}
+
+/* Lightbox styles */
+.lightbox {
+	display: none;
+	position: fixed;
+	z-index: 1000;
+	padding: 60px 20px 20px;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	overflow: auto;
+	background-color: rgba(0, 0, 0, 0.95);
+	backdrop-filter: blur(5px);
+}
+
+.lightbox-content {
+	margin: auto;
+	display: block;
+	width: 90%;
+	max-width: 900px;
+	animation-name: zoom;
+	animation-duration: 0.6s;
+}
+
+@keyframes zoom {
+	from {
+		transform: scale(0.8);
+	}
+	to {
+		transform: scale(1);
+	}
+}
+
+.lightbox-close {
+	position: absolute;
+	top: 15px;
+	right: 35px;
+	color: #f1f1f1;
+	font-size: 40px;
+	font-weight: bold;
+	transition: 0.3s;
+	cursor: pointer;
+	line-height: 1;
+}
+
+.lightbox-close:hover,
+.lightbox-close:focus {
+	color: #bbb;
+	text-decoration: none;
+}
+
+#lightbox-caption {
+	margin: 20px auto 0;
+	display: block;
+	width: 80%;
+	max-width: 700px;
+	text-align: center;
+	color: #ccc;
+	font-size: 1.1rem;
+}
+
+@media (max-width: 700px) {
+	.lightbox-content {
+		width: 100%;
+	}
+}
