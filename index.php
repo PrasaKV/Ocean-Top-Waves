@@ -36,7 +36,7 @@
         <img src="https://images.unsplash.com/photo-1517495331395-94675510a2e7?q=80&w=1964&auto=format&fit=crop" alt="Transport Service" loading="lazy">
         <h3>Seamless Island Transport</h3>
         <p>Reliable and friendly transport services to get you where you need to go.</p>
-        <a href="https://wa.me/1234567890?text=Hi!%20I'm%20interested%20in%20your%20transport%20services." target="_blank" class="btn">Arrange a Ride</a>
+        <a href="#" class="btn whatsapp-link" data-text="Hi! I'm interested in your transport services." target="_blank">Arrange a Ride</a>
       </div>
     </div>
   </section>

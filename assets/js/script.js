@@ -1,11 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-	// --- Page Loader ---
-	const loader = document.getElementById("loader");
-	window.addEventListener("load", () => {
-		loader.style.opacity = "0";
-		setTimeout(() => (loader.style.display = "none"), 500);
-	});
-
 	const carouselContainer = document.querySelector(".hero-carousel .slide");
 	const packagesContainer = document.querySelector(".packages-container");
 
@@ -66,9 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
 					.split(",")
 					.map((f) => `<li>${f.trim()}</li>`)
 					.join("");
-				const whatsappLink = `https://wa.me/1234567890?text=Hi!%20I'm%20interested%20in%20the%20${encodeURIComponent(
-					pkg.name
-				)}%20package.`;
+				const whatsappText = `Hi! I'm interested in the ${pkg.name} package.`;
 
 				packageCard.innerHTML = `
                   <h3>${pkg.name}</h3>
@@ -76,7 +67,7 @@ document.addEventListener("DOMContentLoaded", () => {
 										2
 									)}<span>/person</span></div>
                   <ul>${featuresHtml}</ul>
-                  <a href="${whatsappLink}" target="_blank" class="btn">Book Now</a>
+                  <a href="#" target="_blank" class="btn whatsapp-link" data-text="${whatsappText}">Book Now</a>
               `;
 				packagesContainer.appendChild(packageCard);
 			});
@@ -86,31 +77,29 @@ document.addEventListener("DOMContentLoaded", () => {
 
 	// --- Carousel Logic ---
 	function initializeCarousel() {
+		const slide = document.querySelector(".hero-carousel .slide");
 		const items = document.querySelectorAll(".hero-carousel .item");
 		if (items.length === 0) return;
 
 		let current = 0;
+		const totalItems = items.length;
+
+		const goToSlide = (slideIndex) => {
+			slide.style.transform = `translateX(-${slideIndex * 100}%)`;
+			current = slideIndex;
+		};
+
+		const nextSlide = () => {
+			current = (current + 1) % totalItems;
+			goToSlide(current);
+		};
+
+		const prevSlide = () => {
+			current = (current - 1 + totalItems) % totalItems;
+			goToSlide(current);
+		};
+
 		let autoSlide = setInterval(nextSlide, 5000);
-
-		function showSlide(index) {
-			items.forEach((item, i) => {
-				item.classList.remove("active");
-				if (i === index) {
-					item.classList.add("active");
-				}
-			});
-			current = index;
-		}
-
-		function nextSlide() {
-			current = (current + 1) % items.length;
-			showSlide(current);
-		}
-
-		function prevSlide() {
-			current = (current - 1 + items.length) % items.length;
-			showSlide(current);
-		}
 
 		document.querySelector(".next").addEventListener("click", () => {
 			nextSlide();
@@ -124,7 +113,7 @@ document.addEventListener("DOMContentLoaded", () => {
 			autoSlide = setInterval(nextSlide, 5000);
 		});
 
-		showSlide(0); // Show the first slide initially
+		goToSlide(0); // Initialize position
 	}
 
 	// --- Scroll Animation Logic ---
@@ -145,7 +134,20 @@ document.addEventListener("DOMContentLoaded", () => {
 		});
 	}
 
+	// --- Load WhatsApp Number ---
+	const loadWhatsAppNumber = async () => {
+		const data = await fetchData("get_whatsapp");
+		if (data && data.setting_value) {
+			const whatsappNumber = data.setting_value;
+			document.querySelectorAll(".whatsapp-link").forEach((link) => {
+				const baseText = link.dataset.text || "Hi! I'm interested in your services.";
+				link.href = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(baseText)}`;
+			});
+		}
+	};
+
 	// --- Run Initialization ---
 	loadCarousel();
 	loadPackages();
+	loadWhatsAppNumber();
 });
