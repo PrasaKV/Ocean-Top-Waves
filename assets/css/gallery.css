@@ -38,7 +38,7 @@
 .filter-btn:hover,
 .filter-btn.active {
 	background: var(--primary-color);
-	color: #fff;
+	color: var(--light-text);
 	transform: scale(1.05);
 }
 
