@@ -26,6 +26,11 @@ document.addEventListener("DOMContentLoaded", () => {
 	const whatsappForm = document.getElementById("whatsapp-form");
 	const passwordForm = document.getElementById("password-form");
 
+	// Testimonials Selectors
+	const testimonialsList = document.getElementById("testimonials-list");
+	const testimonialForm = document.getElementById("testimonial-form");
+	const clearTestimonialFormBtn = document.getElementById("clear-testimonial-form");
+
 	// --- API HELPER ---
 	const apiCall = async (action, body = null) => {
 		try {
@@ -108,6 +113,24 @@ document.addEventListener("DOMContentLoaded", () => {
 		}
 	};
 
+	const renderTestimonials = () => {
+		if (!testimonialsList) return;
+		testimonialsList.innerHTML =
+			state.testimonials
+				.map(
+					(t) => `
+          <div class="data-list-item">
+              <p><strong>${t.author}</strong></p>
+              <div class="actions">
+                  <button class="btn-edit btn-edit-testimonial" data-id="${t.id}">Edit</button>
+                  <button class="btn-danger btn-delete-testimonial" data-id="${t.id}">Delete</button>
+              </div>
+          </div>
+      `
+				)
+				.join("") || "<p>No testimonials found. Add one using the form below.</p>";
+	};
+
 	// --- EVENT HANDLERS ---
 	const handlePackageFormSubmit = async (e) => {
 		e.preventDefault();
@@ -173,6 +196,44 @@ document.addEventListener("DOMContentLoaded", () => {
 
 	const clearPackageForm = () => packageForm.reset();
 
+	const handleTestimonialFormSubmit = async (e) => {
+		e.preventDefault();
+		const id = document.getElementById("testimonial-id").value;
+		const payload = {
+			id: id ? id : null,
+			author: document.getElementById("testimonial-author").value,
+			quote: document.getElementById("testimonial-quote").value,
+		};
+		const result = await apiCall("save_testimonial", payload);
+		if (result && result.success) {
+			clearTestimonialForm();
+			await fetchData();
+		}
+	};
+
+	const handleTestimonialsListClick = async (e) => {
+		const target = e.target;
+		if (target.classList.contains("btn-delete-testimonial")) {
+			const id = target.dataset.id;
+			if (confirm("Are you sure you want to delete this testimonial?")) {
+				const result = await apiCall("delete_testimonial", { id });
+				if (result) await fetchData();
+			}
+		}
+		if (target.classList.contains("btn-edit-testimonial")) {
+			const id = target.dataset.id;
+			const testimonial = state.testimonials.find((t) => t.id == id);
+			if (testimonial) {
+				document.getElementById("testimonial-id").value = testimonial.id;
+				document.getElementById("testimonial-author").value = testimonial.author;
+				document.getElementById("testimonial-quote").value = testimonial.quote;
+				testimonialForm.scrollIntoView({ behavior: "smooth" });
+			}
+		}
+	};
+
+	const clearTestimonialForm = () => testimonialForm.reset();
+
 	const handleWhatsappFormSubmit = async (e) => {
 		e.preventDefault();
 		const payload = {
@@ -226,9 +287,11 @@ document.addEventListener("DOMContentLoaded", () => {
 			state.gallery = data.gallery || [];
 			state.carousel = data.carousel || [];
 			state.settings = data.settings || [];
+			state.testimonials = data.testimonials || [];
 			renderPackages();
 			renderGallery();
 			renderSettings();
+			renderTestimonials();
 			// renderCarousel(); // Future implementation
 		}
 	};
@@ -249,6 +312,12 @@ document.addEventListener("DOMContentLoaded", () => {
 		whatsappForm.addEventListener("submit", handleWhatsappFormSubmit);
 	if (passwordForm)
 		passwordForm.addEventListener("submit", handlePasswordFormSubmit);
+	if (testimonialForm)
+		testimonialForm.addEventListener("submit", handleTestimonialFormSubmit);
+	if (testimonialsList)
+		testimonialsList.addEventListener("click", handleTestimonialsListClick);
+	if (clearTestimonialFormBtn)
+		clearTestimonialFormBtn.addEventListener("click", clearTestimonialForm);
 
 	// Initial data load
 	fetchData();

@@ -71,3 +71,16 @@ CREATE TABLE `settings` (
 
 INSERT INTO `settings` (`setting_key`, `setting_value`) VALUES
 ('whatsapp_number', '1234567890');
+
+CREATE TABLE `testimonials` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `author` varchar(255) NOT NULL,
+  `quote` text NOT NULL,
+  `is_featured` tinyint(1) DEFAULT 0,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+INSERT INTO `testimonials` (`author`, `quote`, `is_featured`) VALUES
+('Alex Johnson', 'An absolutely unforgettable experience! The instructors were patient and professional, and I was riding waves by the end of my first lesson.', 1),
+('Samantha Bee', 'Ocean Top Waves made our trip. From the thrilling surf lessons to the beautiful souvenirs, everything was perfect. Highly recommend!', 1);

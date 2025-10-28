@@ -108,6 +108,31 @@ require_once 'includes/sidebar.php';
       <button type="submit" class="btn-admin">Change Password</button>
     </form>
   </section>
+
+  <!-- Testimonials Panel -->
+  <section id="testimonials" class="content-panel">
+    <h2>Manage Testimonials</h2>
+    <div id="testimonials-list">
+      <p>Loading testimonials...</p>
+    </div>
+    <hr>
+    <h3>Add / Edit Testimonial</h3>
+    <form id="testimonial-form">
+      <input type="hidden" id="testimonial-id">
+      <div class="form-group">
+        <label for="testimonial-author">Author</label>
+        <input type="text" id="testimonial-author" required>
+      </div>
+      <div class="form-group">
+        <label for="testimonial-quote">Quote</label>
+        <textarea id="testimonial-quote" required></textarea>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn-admin">Save Testimonial</button>
+        <button type="button" id="clear-testimonial-form" class="btn-secondary">Clear Form</button>
+      </div>
+    </form>
+  </section>
 </main>
 
 <?php require_once 'includes/footer.php'; ?>
