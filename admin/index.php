@@ -78,6 +78,36 @@ require_once 'includes/sidebar.php';
       <p>Loading gallery...</p>
     </div>
   </section>
+
+  <!-- Settings Panel -->
+  <section id="settings" class="content-panel">
+    <h2>Settings</h2>
+    <form id="whatsapp-form">
+      <h3>WhatsApp Number</h3>
+      <div class="form-group">
+        <label for="whatsapp-number">Number</label>
+        <input type="text" id="whatsapp-number" required>
+      </div>
+      <button type="submit" class="btn-admin">Save WhatsApp Number</button>
+    </form>
+    <hr>
+    <form id="password-form">
+      <h3>Change Password</h3>
+      <div class="form-group">
+        <label for="current-password">Current Password</label>
+        <input type="password" id="current-password" required>
+      </div>
+      <div class="form-group">
+        <label for="new-password">New Password</label>
+        <input type="password" id="new-password" required>
+      </div>
+      <div class="form-group">
+        <label for="confirm-password">Confirm New Password</label>
+        <input type="password" id="confirm-password" required>
+      </div>
+      <button type="submit" class="btn-admin">Change Password</button>
+    </form>
+  </section>
 </main>
 
 <?php require_once 'includes/footer.php'; ?>

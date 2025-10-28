@@ -60,3 +60,14 @@ INSERT INTO `surfing_packages` (`name`, `price`, `features`) VALUES
 ('Intermediate Rider', 120.00, '3-hour session,Video analysis,Advanced techniques'),
 ('Pro-Level Week', 450.00, '5-day course,All gear included,Personalized coaching');
 
+CREATE TABLE `settings` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `setting_key` varchar(255) NOT NULL,
+  `setting_value` text DEFAULT NULL,
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `setting_key` (`setting_key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+INSERT INTO `settings` (`setting_key`, `setting_value`) VALUES
+('whatsapp_number', '1234567890');

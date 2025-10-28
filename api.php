@@ -26,6 +26,14 @@ switch ($action) {
     if ($method === 'GET') get_public_data($pdo, 'gallery_images', '1 ORDER BY uploaded_at DESC');
     break;
 
+  case 'get_whatsapp':
+    if ($method === 'GET') {
+      $stmt = $pdo->query("SELECT setting_value FROM settings WHERE setting_key = 'whatsapp_number'");
+      $result = $stmt->fetch(PDO::FETCH_ASSOC);
+      json_response($result ?: ['setting_value' => '']);
+    }
+    break;
+
   // --- Admin Routes ---
   case 'admin_get_all':
     if ($method === 'GET') {
@@ -58,6 +66,20 @@ switch ($action) {
     }
     break;
 
+  case 'save_setting':
+    if ($method === 'POST') {
+      require_auth();
+      save_setting($pdo);
+    }
+    break;
+
+  case 'change_password':
+    if ($method === 'POST') {
+      require_auth();
+      change_password($pdo);
+    }
+    break;
+
   default:
     json_response(['error' => 'Invalid API Action'], 404);
     break;
@@ -79,7 +101,47 @@ function admin_get_all_data($pdo)
   $data['packages'] = $pdo->query("SELECT * FROM surfing_packages ORDER BY price")->fetchAll();
   $data['gallery'] = $pdo->query("SELECT * FROM gallery_images ORDER BY uploaded_at DESC")->fetchAll();
   $data['carousel'] = $pdo->query("SELECT * FROM carousel_slides ORDER BY display_order")->fetchAll();
+  $data['settings'] = $pdo->query("SELECT * FROM settings")->fetchAll();
   json_response($data);
+}
+
+// Saves a setting
+function save_setting($pdo)
+{
+  $input = json_decode(file_get_contents('php://input'), true);
+  $key = $input['key'] ?? '';
+  $value = $input['value'] ?? '';
+
+  if (empty($key)) {
+    json_response(['error' => 'Setting key is required'], 400);
+  }
+
+  $sql = "INSERT INTO settings (setting_key, setting_value) VALUES (?, ?) ON DUPLICATE KEY UPDATE setting_value = ?";
+  $stmt = $pdo->prepare($sql);
+  $stmt->execute([$key, $value, $value]);
+  json_response(['success' => true]);
+}
+
+// Changes the admin password
+function change_password($pdo)
+{
+  $input = json_decode(file_get_contents('php://input'), true);
+  $currentPassword = $input['currentPassword'];
+  $newPassword = $input['newPassword'];
+  $userId = $_SESSION['user_id'];
+
+  $stmt = $pdo->prepare("SELECT password FROM admins WHERE id = ?");
+  $stmt->execute([$userId]);
+  $admin = $stmt->fetch();
+
+  if (!$admin || !password_verify($currentPassword, $admin['password'])) {
+    json_response(['error' => 'Incorrect current password'], 401);
+  }
+
+  $newPasswordHash = password_hash($newPassword, PASSWORD_DEFAULT);
+  $stmt = $pdo->prepare("UPDATE admins SET password = ? WHERE id = ?");
+  $stmt->execute([$newPasswordHash, $userId]);
+  json_response(['success' => true]);
 }
 
 // Saves (inserts or updates) a surfing package

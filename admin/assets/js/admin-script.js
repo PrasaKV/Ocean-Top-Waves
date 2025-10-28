@@ -22,6 +22,10 @@ document.addEventListener("DOMContentLoaded", () => {
 	const galleryList = document.getElementById("gallery-list");
 	const galleryForm = document.getElementById("gallery-upload-form");
 
+	// Settings Selectors
+	const whatsappForm = document.getElementById("whatsapp-form");
+	const passwordForm = document.getElementById("password-form");
+
 	// --- API HELPER ---
 	const apiCall = async (action, body = null) => {
 		try {
@@ -94,6 +98,16 @@ document.addEventListener("DOMContentLoaded", () => {
 			"<p>No gallery images found. Add one using the form above.</p>";
 	};
 
+	const renderSettings = () => {
+		if (!whatsappForm) return;
+		const whatsappNumber = state.settings.find(
+			(s) => s.setting_key === "whatsapp_number"
+		);
+		if (whatsappNumber) {
+			document.getElementById("whatsapp-number").value = whatsappNumber.setting_value;
+		}
+	};
+
 	// --- EVENT HANDLERS ---
 	const handlePackageFormSubmit = async (e) => {
 		e.preventDefault();
@@ -159,6 +173,38 @@ document.addEventListener("DOMContentLoaded", () => {
 
 	const clearPackageForm = () => packageForm.reset();
 
+	const handleWhatsappFormSubmit = async (e) => {
+		e.preventDefault();
+		const payload = {
+			key: "whatsapp_number",
+			value: document.getElementById("whatsapp-number").value,
+		};
+		const result = await apiCall("save_setting", payload);
+		if (result && result.success) {
+			alert("WhatsApp number updated successfully!");
+			await fetchData();
+		}
+	};
+
+	const handlePasswordFormSubmit = async (e) => {
+		e.preventDefault();
+		const currentPassword = document.getElementById("current-password").value;
+		const newPassword = document.getElementById("new-password").value;
+		const confirmPassword = document.getElementById("confirm-password").value;
+
+		if (newPassword !== confirmPassword) {
+			alert("New passwords do not match.");
+			return;
+		}
+
+		const payload = { currentPassword, newPassword };
+		const result = await apiCall("change_password", payload);
+		if (result && result.success) {
+			alert("Password changed successfully!");
+			passwordForm.reset();
+		}
+	};
+
 	// --- NAVIGATION ---
 	const handleNavClick = (e) => {
 		e.preventDefault();
@@ -179,8 +225,10 @@ document.addEventListener("DOMContentLoaded", () => {
 			state.packages = data.packages || [];
 			state.gallery = data.gallery || [];
 			state.carousel = data.carousel || [];
+			state.settings = data.settings || [];
 			renderPackages();
 			renderGallery();
+			renderSettings();
 			// renderCarousel(); // Future implementation
 		}
 	};
@@ -197,6 +245,10 @@ document.addEventListener("DOMContentLoaded", () => {
 		galleryList.addEventListener("click", handleGalleryListClick);
 	if (clearPackageFormBtn)
 		clearPackageFormBtn.addEventListener("click", clearPackageForm);
+	if (whatsappForm)
+		whatsappForm.addEventListener("submit", handleWhatsappFormSubmit);
+	if (passwordForm)
+		passwordForm.addEventListener("submit", handlePasswordFormSubmit);
 
 	// Initial data load
 	fetchData();

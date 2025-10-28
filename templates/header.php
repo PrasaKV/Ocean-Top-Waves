@@ -9,12 +9,10 @@
   <meta name="keywords" content="surfing lessons, surf school, learn to surf, tourist activities, souvenir shop, transport services">
   <link rel="stylesheet" href="assets/css/style.css">
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Montserrat:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
 
 <body>
-  <div id="loader">
-    <div class="loader-inner"></div>
-  </div>
   <header>
     <nav>
       <a href="index.php" class="logo">Ocean Top Waves</a>
