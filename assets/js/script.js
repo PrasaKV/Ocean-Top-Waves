@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
-	const carouselContainer = document.querySelector(".hero-carousel .slide");
+	const carouselContainer = document.querySelector(".container .slide");
 	const packagesContainer = document.querySelector(".packages-container");
+	const testimonialsContainer = document.querySelector(".testimonials-container");
 
 	// --- API Fetch Functions ---
 	const fetchData = async (action) => {
@@ -33,7 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
                   <div class="content">
                       <div class="name">${slide.catch_phrase}</div>
                       <div class="des">${slide.sub_text}</div>
-                      <a href="${slide.button_url}" style="background-color:${slide.button_color};">${slide.button_text}</a>
+                      <a href="${slide.button_url}" class="seeMore"><button>${slide.button_text}</button></a>
                   </div>
               `;
 				carouselContainer.appendChild(itemDiv);
@@ -77,43 +78,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
 	// --- Carousel Logic ---
 	function initializeCarousel() {
-		const slide = document.querySelector(".hero-carousel .slide");
-		const items = document.querySelectorAll(".hero-carousel .item");
-		if (items.length === 0) return;
+		let next = document.querySelector(".next");
+		let prev = document.querySelector(".prev");
 
-		let current = 0;
-		const totalItems = items.length;
-
-		const goToSlide = (slideIndex) => {
-			slide.style.transform = `translateX(-${slideIndex * 100}%)`;
-			current = slideIndex;
-		};
-
-		const nextSlide = () => {
-			current = (current + 1) % totalItems;
-			goToSlide(current);
-		};
-
-		const prevSlide = () => {
-			current = (current - 1 + totalItems) % totalItems;
-			goToSlide(current);
-		};
-
-		let autoSlide = setInterval(nextSlide, 5000);
-
-		document.querySelector(".next").addEventListener("click", () => {
-			nextSlide();
-			clearInterval(autoSlide);
-			autoSlide = setInterval(nextSlide, 5000);
+		next.addEventListener("click", function () {
+			let items = document.querySelectorAll(".item");
+			document.querySelector(".slide").appendChild(items[0]);
 		});
 
-		document.querySelector(".prev").addEventListener("click", () => {
-			prevSlide();
-			clearInterval(autoSlide);
-			autoSlide = setInterval(nextSlide, 5000);
+		prev.addEventListener("click", function () {
+			let items = document.querySelectorAll(".item");
+			document.querySelector(".slide").prepend(items[items.length - 1]);
 		});
-
-		goToSlide(0); // Initialize position
 	}
 
 	// --- Scroll Animation Logic ---
@@ -146,8 +122,32 @@ document.addEventListener("DOMContentLoaded", () => {
 		}
 	};
 
+	// --- Load Testimonials ---
+	const loadTestimonials = async () => {
+		const data = await fetchData("get_testimonials");
+		if (testimonialsContainer) {
+			testimonialsContainer.innerHTML = ""; // Clear placeholder
+			if (data.length === 0) {
+				testimonialsContainer.innerHTML =
+					'<p class="loading-placeholder">No testimonials yet.</p>';
+				return;
+			}
+			data.forEach((testimonial) => {
+				const testimonialCard = document.createElement("div");
+				testimonialCard.className = "testimonial-card animate-on-scroll";
+				testimonialCard.innerHTML = `
+                  <p>"${testimonial.quote}"</p>
+                  <span class="author">- ${testimonial.author}</span>
+              `;
+				testimonialsContainer.appendChild(testimonialCard);
+			});
+			initializeScrollAnimations();
+		}
+	};
+
 	// --- Run Initialization ---
 	loadCarousel();
 	loadPackages();
 	loadWhatsAppNumber();
+	loadTestimonials();
 });

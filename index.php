@@ -1,18 +1,25 @@
 <?php require_once 'templates/header.php'; ?>
 
 <!-- Hero Carousel -->
-<section class="hero-carousel">
+<div class="container">
   <div class="slide">
     <!-- Items are dynamically loaded by script.js via an API call -->
-    <div class="loading-placeholder">Loading amazing waves...</div>
   </div>
   <div class="button">
     <button class="prev">◁</button>
     <button class="next">▷</button>
   </div>
-</section>
+</div>
 
 <main>
+  <!-- About Us Section -->
+  <section id="about-us" class="content-section animate-on-scroll">
+    <h2>About Ocean Top Waves</h2>
+    <p class="about-us-text">
+      Welcome to Ocean Top Waves, your premier destination for learning to surf in a tropical paradise. Founded by a group of passionate surfers, our mission is to share the exhilarating experience of riding the waves with everyone, from absolute beginners to seasoned pros. We believe in safety, fun, and creating memories that last a lifetime.
+    </p>
+  </section>
+
   <!-- Surfing Lessons Section -->
   <section id="surfing-lessons" class="content-section">
     <h2>Your Surfing Adventure Awaits</h2>
@@ -38,6 +45,34 @@
         <p>Reliable and friendly transport services to get you where you need to go.</p>
         <a href="#" class="btn whatsapp-link" data-text="Hi! I'm interested in your transport services." target="_blank">Arrange a Ride</a>
       </div>
+    </div>
+  </section>
+
+  <!-- Explore Sri Lanka Section -->
+  <section id="explore" class="content-section gray-bg">
+    <h2 class="animate-on-scroll">Explore Sri Lanka</h2>
+    <div class="explore-container">
+      <div class="explore-card animate-on-scroll">
+        <img src="https://images.unsplash.com/photo-1548013146-72479768bada?q=80&w=2076&auto=format&fit=crop" alt="Ancient Temples" loading="lazy">
+        <h3>Ancient Temples</h3>
+      </div>
+      <div class="explore-card animate-on-scroll">
+        <img src="https://images.unsplash.com/photo-1593693397623-11f2a011a0a4?q=80&w=1932&auto=format&fit=crop" alt="Lush Tea Plantations" loading="lazy">
+        <h3>Lush Tea Plantations</h3>
+      </div>
+      <div class="explore-card animate-on-scroll">
+        <img src="https://images.unsplash.com/photo-1555294520-2ceb28a988e8?q=80&w=2070&auto=format&fit=crop" alt="Wildlife Safaris" loading="lazy">
+        <h3>Wildlife Safaris</h3>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials Section -->
+  <section id="testimonials" class="content-section">
+    <h2 class="animate-on-scroll">What Our Customers Say</h2>
+    <div class="testimonials-container">
+      <!-- Testimonials are dynamically loaded by script.js via an API call -->
+      <div class="loading-placeholder">Loading testimonials...</div>
     </div>
   </section>
 </main>

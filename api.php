@@ -34,6 +34,10 @@ switch ($action) {
     }
     break;
 
+  case 'get_testimonials':
+    if ($method === 'GET') get_public_data($pdo, 'testimonials', 'is_featured = true ORDER BY created_at DESC');
+    break;
+
   // --- Admin Routes ---
   case 'admin_get_all':
     if ($method === 'GET') {
@@ -80,6 +84,20 @@ switch ($action) {
     }
     break;
 
+  case 'save_testimonial':
+    if ($method === 'POST') {
+      require_auth();
+      save_testimonial($pdo);
+    }
+    break;
+
+  case 'delete_testimonial':
+    if ($method === 'POST') {
+      require_auth();
+      delete_by_id($pdo, 'testimonials');
+    }
+    break;
+
   default:
     json_response(['error' => 'Invalid API Action'], 404);
     break;
@@ -102,6 +120,7 @@ function admin_get_all_data($pdo)
   $data['gallery'] = $pdo->query("SELECT * FROM gallery_images ORDER BY uploaded_at DESC")->fetchAll();
   $data['carousel'] = $pdo->query("SELECT * FROM carousel_slides ORDER BY display_order")->fetchAll();
   $data['settings'] = $pdo->query("SELECT * FROM settings")->fetchAll();
+  $data['testimonials'] = $pdo->query("SELECT * FROM testimonials ORDER BY created_at DESC")->fetchAll();
   json_response($data);
 }
 
@@ -142,6 +161,28 @@ function change_password($pdo)
   $stmt = $pdo->prepare("UPDATE admins SET password = ? WHERE id = ?");
   $stmt->execute([$newPasswordHash, $userId]);
   json_response(['success' => true]);
+}
+
+// Saves (inserts or updates) a testimonial
+function save_testimonial($pdo)
+{
+  $input = json_decode(file_get_contents('php://input'), true);
+  $id = $input['id'] ?? null;
+  if (empty($input['author']) || empty($input['quote'])) {
+    json_response(['error' => 'Author and quote are required'], 400);
+  }
+
+  if ($id) { // Update
+    $sql = "UPDATE testimonials SET author = ?, quote = ? WHERE id = ?";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([$input['author'], $input['quote'], $id]);
+  } else { // Insert
+    $sql = "INSERT INTO testimonials (author, quote) VALUES (?, ?)";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([$input['author'], $input['quote']]);
+    $id = $pdo->lastInsertId();
+  }
+  json_response(['success' => true, 'id' => $id]);
 }
 
 // Saves (inserts or updates) a surfing package
@@ -190,7 +231,7 @@ function delete_by_id($pdo, $table)
   }
 
   // Sanitize table name to prevent SQL injection
-  if (!in_array($table, ['surfing_packages', 'gallery_images', 'carousel_slides'])) {
+  if (!in_array($table, ['surfing_packages', 'gallery_images', 'carousel_slides', 'testimonials'])) {
     json_response(['error' => 'Invalid table specified'], 400);
   }
 
