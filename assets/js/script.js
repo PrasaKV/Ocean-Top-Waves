@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	const apiData = {
 		carousel: [
 			{
-				background_image_url: "/assets/images/carousel/image-1.jpg",
+				background_image_url: "/assets/images/carousel/carousel-image-1.jpg",
 				catch_phrase: "Discover the Perfect Wave",
 				sub_text:
 					"Sri Lanka's pristine coastline is calling. Let us guide you to the ultimate surfing experience.",
@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
 				button_url: "#surfing-lessons",
 			},
 			{
-				background_image_url: "/assets/images/carousel/image-2.webp",
+				background_image_url: "/assets/images/carousel/carousel-image-2.webp",
 				catch_phrase: "Your Adventure, Our Passion",
 				sub_text:
 					"From turquoise waves to lush green hills, we offer more than just surfing—we offer unforgettable memories.",
@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
 				button_url: "#explore",
 			},
 			{
-				background_image_url: "/assets/images/carousel/image-3.jpg",
+				background_image_url: "/assets/images/carousel/carousel-image-3.jpg",
 				catch_phrase: "Crafted with Island Soul",
 				sub_text:
 					"Discover handcrafted treasures made by local artisans — each souvenir tells the story of our island’s vibrant heritage.",

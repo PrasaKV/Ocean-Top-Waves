@@ -67,7 +67,7 @@
         <!-- Tour Card 1: Wildlife Safari -->
         <div class="explore-card animate-on-scroll">
           <div class="explore-image">
-            <img src="https://images.unsplash.com/photo-1555294520-2ceb28a988e8?q=80&w=2070&auto=format&fit=crop" alt="Wildlife Safari in Sri Lanka" loading="lazy">
+            <img src="/assets/images/places/places-image-01.webp" alt="Wildlife Safari in Sri Lanka" loading="lazy">
           </div>
           <div class="explore-overlay">
             <i class="fas fa-paw"></i>
@@ -79,7 +79,7 @@
         <!-- Tour Card 2: Tea Plantations -->
         <div class="explore-card animate-on-scroll">
           <div class="explore-image">
-            <img src="https://images.unsplash.com/photo-1593693397623-11f2a011a0a4?q=80&w=1932&auto=format&fit=crop" alt="Lush Tea Plantations in Sri Lanka" loading="lazy">
+            <img src="/assets/images/places/places-image-02.jpg" alt="Lush Tea Plantations in Sri Lanka" loading="lazy">
           </div>
           <div class="explore-overlay">
             <i class="fas fa-leaf"></i>
@@ -91,7 +91,7 @@
         <!-- Tour Card 3: Ancient Temples -->
         <div class="explore-card animate-on-scroll">
           <div class="explore-image">
-            <img src="https://images.unsplash.com/photo-1548013146-72479768bada?q=80&w=2076&auto=format&fit=crop" alt="Ancient Temples of Sri Lanka" loading="lazy">
+            <img src="/assets/images/places/places-image-03.jpg" alt="Ancient Temples of Sri Lanka" loading="lazy">
           </div>
           <div class="explore-overlay">
             <i class="fas fa-gopuram"></i>
@@ -114,7 +114,7 @@
         <!-- Service Card 1: Souvenir Shop -->
         <div class="service-card animate-on-scroll">
           <div class="service-image">
-            <img src="https://images.unsplash.com/photo-1528642474498-1af0c17fd8c3?q=80&w=1974&auto=format&fit=crop" alt="Souvenir Shop" loading="lazy">
+            <img src="/assets/images/services/services-image-01.jpg" alt="Souvenir Shop" loading="lazy">
             <div class="service-overlay"><i class="fas fa-shopping-bag"></i></div>
           </div>
           <div class="service-content">
@@ -126,7 +126,7 @@
         <!-- Service Card 2: Transport -->
         <div class="service-card animate-on-scroll">
           <div class="service-image">
-            <img src="https://images.unsplash.com/photo-1517495331395-94675510a2e7?q=80&w=1964&auto=format&fit=crop" alt="Transport Service" loading="lazy">
+            <img src="/assets/images/services/services-image-02.jpg" alt="Transport Service" loading="lazy">
             <div class="service-overlay"><i class="fas fa-car"></i></div>
           </div>
           <div class="service-content">
