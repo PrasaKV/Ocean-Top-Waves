@@ -579,12 +579,12 @@ h4 {
 	font-size: 1.1rem;
 }
 
-/* ==================== 8. MODERN FOOTER ==================== */
+/* ==================== 8. MODERN FOOTER (REVISED) ==================== */
 .modern-footer {
 	position: relative;
 	background: var(--dark-bg-color);
 	color: var(--light-text-color);
-	padding-top: 4rem;
+	padding-top: 4rem; /* Space for wave */
 }
 .footer-wave {
 	position: absolute;
@@ -602,12 +602,6 @@ h4 {
 	height: 100px;
 }
 .footer-wave path {
-	fill: var(--section-bg-color);
-}
-.modern-footer .footer-wave ~ .footer-content-wrapper {
-	padding-top: 0;
-}
-body > .modern-footer .footer-wave path {
 	fill: #fff;
 }
 .gray-bg + .modern-footer .footer-wave path {
@@ -620,62 +614,30 @@ body > .modern-footer .footer-wave path {
 	margin: 0 auto;
 }
 
-.newsletter-section {
-	background: rgba(255, 255, 255, 0.08);
-	border-radius: 20px;
-	padding: 2.5rem;
-	backdrop-filter: blur(10px);
-	border: 1px solid rgba(255, 255, 255, 0.1);
-	margin-bottom: 4rem;
-}
-.newsletter-content {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	gap: 2rem;
-	flex-wrap: wrap;
-}
-.newsletter-text h3 {
-	color: white;
-	font-size: 1.5rem;
-	margin-bottom: 0.5rem;
-}
-.newsletter-text p {
-	color: #b0b0b0;
-}
-.newsletter-form {
-	display: flex;
-	gap: 0.75rem;
-	flex: 1;
-	min-width: 300px;
-}
-.newsletter-form input {
-	flex: 1;
-	padding: 0.9rem 1.5rem;
-	border: none;
-	background: rgba(0, 0, 0, 0.2);
-	border-radius: 12px;
-	color: white;
-	font-size: 1rem;
-}
-.newsletter-form input::placeholder {
-	color: #888;
-}
-.newsletter-form button {
-	flex-shrink: 0;
-}
-
+/* Main 3-Column Grid */
 .footer-grid {
 	display: grid;
-	grid-template-columns: 2fr 1fr 1.5fr;
-	gap: 3rem;
+	gap: 2.5rem 2rem;
+	/* Creates a responsive grid that wraps nicely on smaller screens */
+	grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
 	margin-bottom: 3rem;
 }
 .brand-column .footer-logo {
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+	text-decoration: none;
 	margin-bottom: 1.5rem;
+}
+.footer-logo-icon {
+	width: 50px;
+	height: auto;
 }
 .brand-column .footer-logo-text {
 	color: white;
+	font-family: "Montserrat", sans-serif;
+	font-weight: 800;
+	font-size: 1.4rem;
 }
 .footer-description {
 	line-height: 1.8;
@@ -703,34 +665,6 @@ body > .modern-footer .footer-wave path {
 	transform: translateY(-3px);
 }
 
-.footer-logo {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	gap: 0.75rem;
-	text-decoration: none;
-	margin-bottom: 1rem;
-}
-.footer-logo:hover {
-	box-shadow: none;
-}
-.footer-logo-icon {
-	max-width: 100px;
-	max-height: 100px;
-	border-radius: 50px;
-	transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-.footer-logo:hover .footer-logo-icon {
-	transform: scale(1.1);
-	box-shadow: 0 0px 50px rgba(0, 118, 182, 0.9);
-}
-.footer-logo-text {
-	font-family: "Montserrat", sans-serif;
-	font-weight: 800;
-	font-size: 1.5rem;
-	color: var(--primary-color);
-}
-
 .footer-heading {
 	color: white;
 	font-size: 1.2rem;
@@ -747,7 +681,6 @@ body > .modern-footer .footer-wave path {
 	height: 3px;
 	background: var(--secondary-color);
 }
-
 .footer-links {
 	list-style: none;
 }
@@ -770,6 +703,7 @@ body > .modern-footer .footer-wave path {
 	font-size: 0.6rem;
 }
 
+/* Clickable Contact Info */
 .contact-info {
 	list-style: none;
 }
@@ -777,19 +711,48 @@ body > .modern-footer .footer-wave path {
 	display: flex;
 	gap: 1rem;
 	margin-bottom: 1.25rem;
+}
+.contact-info a {
 	color: #b0b0b0;
+	text-decoration: none;
+	display: flex;
+	transition: color 0.3s ease;
+}
+.contact-info a:hover {
+	color: var(--secondary-color);
 }
 .contact-info i {
 	color: var(--secondary-color);
 	font-size: 1.1rem;
 	width: 20px;
+	margin-top: 4px;
 }
 
+/* New Map Section */
+.footer-map-section {
+	margin-top: 3rem;
+	margin-bottom: 3rem;
+}
+.footer-map-section .footer-heading {
+	text-align: center;
+}
+.footer-map-section .footer-heading::after {
+	left: 50%;
+	transform: translateX(-50%);
+}
+.map-container {
+	border-radius: 15px;
+	overflow: hidden;
+	border: 2px solid rgba(255, 255, 255, 0.1);
+	box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+/* Footer Bottom */
 .footer-bottom {
 	padding-top: 2rem;
 	border-top: 1px solid rgba(255, 255, 255, 0.1);
 	display: flex;
-	justify-content: space-between;
+	justify-content: center;
 	align-items: center;
 	flex-wrap: wrap;
 	gap: 1rem;
@@ -805,6 +768,26 @@ body > .modern-footer .footer-wave path {
 	color: var(--secondary-color);
 }
 
+/* Responsive Adjustments for Footer */
+@media (max-width: 768px) {
+	.footer-grid,
+	.footer-heading {
+		text-align: center;
+	}
+	.footer-heading::after {
+		left: 50%;
+		transform: translateX(-50%);
+	}
+	.contact-info a,
+	.footer-links a,
+	.social-links {
+		justify-content: center;
+	}
+	.footer-bottom {
+		flex-direction: column;
+		text-align: center;
+	}
+}
 /* ==================== 9. WHATSAPP BUTTON ==================== */
 .whatsapp-float-modern {
 	position: fixed;

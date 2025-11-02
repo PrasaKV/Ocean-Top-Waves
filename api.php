@@ -1,241 +1,57 @@
 <?php
-require_once 'config.php';
+require_once 'config.php'; // Includes session_start() and $conn
 
-// --- Simple API Router ---
-$action = $_GET['action'] ?? '';
-$method = $_SERVER['REQUEST_METHOD'];
+header('Content-Type: application/json');
 
-// --- Authentication Check Function ---
-function require_auth()
-{
-  if (!isset($_SESSION['user_id'])) {
-    json_response(['error' => 'Unauthorized Access'], 401);
+$action = isset($_GET['action']) ? $_GET['action'] : '';
+
+// --- ROUTING FOR PUBLIC DATA ---
+try {
+  switch ($action) {
+    case 'get_packages':
+      echo json_encode(db_query($conn, "SELECT id, name, price, features FROM packages ORDER BY price ASC"));
+      break;
+    case 'get_testimonials':
+      echo json_encode(db_query($conn, "SELECT id, quote, author FROM testimonials ORDER BY RAND()"));
+      break;
+    case 'get_gallery':
+      echo json_encode(db_query($conn, "SELECT id, image_url, alt_text, category FROM gallery"));
+      break;
+    case 'get_settings':
+      $settings_array = db_query($conn, "SELECT setting_key, setting_value FROM settings");
+      $settings = [];
+      foreach ($settings_array as $row) {
+        $settings[$row['setting_key']] = $row['setting_value'];
+      }
+      echo json_encode($settings);
+      break;
+    default:
+      http_response_code(400);
+      echo json_encode(['error' => 'Invalid action specified']);
+      break;
   }
+} catch (Exception $e) {
+  http_response_code(500);
+  echo json_encode(['error' => $e->getMessage()]);
 }
 
-// --- Main Routing Logic ---
-switch ($action) {
-  // --- Public GET Routes ---
-  case 'get_carousel':
-    if ($method === 'GET') get_public_data($pdo, 'carousel_slides', 'is_active = true ORDER BY display_order');
-    break;
-  case 'get_packages':
-    if ($method === 'GET') get_public_data($pdo, 'surfing_packages', 'is_active = true ORDER BY price');
-    break;
-  case 'get_gallery':
-    if ($method === 'GET') get_public_data($pdo, 'gallery_images', '1 ORDER BY uploaded_at DESC');
-    break;
+$conn->close();
 
-  case 'get_whatsapp':
-    if ($method === 'GET') {
-      $stmt = $pdo->query("SELECT setting_value FROM settings WHERE setting_key = 'whatsapp_number'");
-      $result = $stmt->fetch(PDO::FETCH_ASSOC);
-      json_response($result ?: ['setting_value' => '']);
-    }
-    break;
-
-  case 'get_testimonials':
-    if ($method === 'GET') get_public_data($pdo, 'testimonials', 'is_featured = true ORDER BY created_at DESC');
-    break;
-
-  // --- Admin Routes ---
-  case 'admin_get_all':
-    if ($method === 'GET') {
-      require_auth();
-      admin_get_all_data($pdo);
-    }
-    break;
-  case 'save_package':
-    if ($method === 'POST') {
-      require_auth();
-      save_package($pdo);
-    }
-    break;
-  case 'delete_package':
-    if ($method === 'POST') {
-      require_auth();
-      delete_by_id($pdo, 'surfing_packages');
-    }
-    break;
-  case 'save_gallery_image':
-    if ($method === 'POST') {
-      require_auth();
-      save_gallery_image($pdo);
-    }
-    break;
-  case 'delete_gallery_image':
-    if ($method === 'POST') {
-      require_auth();
-      delete_by_id($pdo, 'gallery_images');
-    }
-    break;
-
-  case 'save_setting':
-    if ($method === 'POST') {
-      require_auth();
-      save_setting($pdo);
-    }
-    break;
-
-  case 'change_password':
-    if ($method === 'POST') {
-      require_auth();
-      change_password($pdo);
-    }
-    break;
-
-  case 'save_testimonial':
-    if ($method === 'POST') {
-      require_auth();
-      save_testimonial($pdo);
-    }
-    break;
-
-  case 'delete_testimonial':
-    if ($method === 'POST') {
-      require_auth();
-      delete_by_id($pdo, 'testimonials');
-    }
-    break;
-
-  default:
-    json_response(['error' => 'Invalid API Action'], 404);
-    break;
-}
-
-// --- FUNCTION DEFINITIONS ---
-
-// Generic fetch for public data
-function get_public_data($pdo, $table, $where_clause)
+// --- DATABASE HELPER FUNCTION ---
+function db_query($conn, $sql, $params = [], $types = "")
 {
-  $stmt = $pdo->query("SELECT * FROM {$table} WHERE {$where_clause}");
-  json_response($stmt->fetchAll());
-}
-
-// Fetches all data for the admin panel
-function admin_get_all_data($pdo)
-{
-  $data = [];
-  $data['packages'] = $pdo->query("SELECT * FROM surfing_packages ORDER BY price")->fetchAll();
-  $data['gallery'] = $pdo->query("SELECT * FROM gallery_images ORDER BY uploaded_at DESC")->fetchAll();
-  $data['carousel'] = $pdo->query("SELECT * FROM carousel_slides ORDER BY display_order")->fetchAll();
-  $data['settings'] = $pdo->query("SELECT * FROM settings")->fetchAll();
-  $data['testimonials'] = $pdo->query("SELECT * FROM testimonials ORDER BY created_at DESC")->fetchAll();
-  json_response($data);
-}
-
-// Saves a setting
-function save_setting($pdo)
-{
-  $input = json_decode(file_get_contents('php://input'), true);
-  $key = $input['key'] ?? '';
-  $value = $input['value'] ?? '';
-
-  if (empty($key)) {
-    json_response(['error' => 'Setting key is required'], 400);
+  $stmt = $conn->prepare($sql);
+  if (!$stmt) {
+    throw new Exception("Database query preparation failed: " . $conn->error);
   }
-
-  $sql = "INSERT INTO settings (setting_key, setting_value) VALUES (?, ?) ON DUPLICATE KEY UPDATE setting_value = ?";
-  $stmt = $pdo->prepare($sql);
-  $stmt->execute([$key, $value, $value]);
-  json_response(['success' => true]);
-}
-
-// Changes the admin password
-function change_password($pdo)
-{
-  $input = json_decode(file_get_contents('php://input'), true);
-  $currentPassword = $input['currentPassword'];
-  $newPassword = $input['newPassword'];
-  $userId = $_SESSION['user_id'];
-
-  $stmt = $pdo->prepare("SELECT password FROM admins WHERE id = ?");
-  $stmt->execute([$userId]);
-  $admin = $stmt->fetch();
-
-  if (!$admin || !password_verify($currentPassword, $admin['password'])) {
-    json_response(['error' => 'Incorrect current password'], 401);
+  if (!empty($params)) {
+    $stmt->bind_param($types, ...$params);
   }
-
-  $newPasswordHash = password_hash($newPassword, PASSWORD_DEFAULT);
-  $stmt = $pdo->prepare("UPDATE admins SET password = ? WHERE id = ?");
-  $stmt->execute([$newPasswordHash, $userId]);
-  json_response(['success' => true]);
-}
-
-// Saves (inserts or updates) a testimonial
-function save_testimonial($pdo)
-{
-  $input = json_decode(file_get_contents('php://input'), true);
-  $id = $input['id'] ?? null;
-  if (empty($input['author']) || empty($input['quote'])) {
-    json_response(['error' => 'Author and quote are required'], 400);
+  if (!$stmt->execute()) {
+    throw new Exception("Database query execution failed: " . $stmt->error);
   }
-
-  if ($id) { // Update
-    $sql = "UPDATE testimonials SET author = ?, quote = ? WHERE id = ?";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute([$input['author'], $input['quote'], $id]);
-  } else { // Insert
-    $sql = "INSERT INTO testimonials (author, quote) VALUES (?, ?)";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute([$input['author'], $input['quote']]);
-    $id = $pdo->lastInsertId();
-  }
-  json_response(['success' => true, 'id' => $id]);
-}
-
-// Saves (inserts or updates) a surfing package
-function save_package($pdo)
-{
-  $input = json_decode(file_get_contents('php://input'), true);
-  $id = $input['id'] ?? null;
-  if (empty($input['name']) || !isset($input['price']) || empty($input['features'])) {
-    json_response(['error' => 'Missing required fields for package'], 400);
-  }
-
-  if ($id) { // Update
-    $sql = "UPDATE surfing_packages SET name = ?, price = ?, features = ? WHERE id = ?";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute([$input['name'], $input['price'], $input['features'], $id]);
-  } else { // Insert
-    $sql = "INSERT INTO surfing_packages (name, price, features) VALUES (?, ?, ?)";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute([$input['name'], $input['price'], $input['features']]);
-    $id = $pdo->lastInsertId();
-  }
-  json_response(['success' => true, 'id' => $id]);
-}
-
-// Saves a new gallery image
-function save_gallery_image($pdo)
-{
-  $input = json_decode(file_get_contents('php://input'), true);
-  if (empty($input['image_url']) || empty($input['category'])) {
-    json_response(['error' => 'Image URL and Category are required'], 400);
-  }
-
-  $sql = "INSERT INTO gallery_images (image_url, category, caption) VALUES (?, ?, ?)";
-  $stmt = $pdo->prepare($sql);
-  $stmt->execute([$input['image_url'], $input['category'], $input['caption'] ?? '']);
-  json_response(['success' => true, 'id' => $pdo->lastInsertId()]);
-}
-
-// Generic delete function for any table with an 'id' column
-function delete_by_id($pdo, $table)
-{
-  $input = json_decode(file_get_contents('php://input'), true);
-  $id = $input['id'] ?? null;
-  if (!$id) {
-    json_response(['error' => 'Item ID is required for deletion'], 400);
-  }
-
-  // Sanitize table name to prevent SQL injection
-  if (!in_array($table, ['surfing_packages', 'gallery_images', 'carousel_slides', 'testimonials'])) {
-    json_response(['error' => 'Invalid table specified'], 400);
-  }
-
-  $stmt = $pdo->prepare("DELETE FROM {$table} WHERE id = ?");
-  $stmt->execute([$id]);
-  json_response(['success' => true]);
+  $result = $stmt->get_result();
+  $data = $result->fetch_all(MYSQLI_ASSOC);
+  $stmt->close();
+  return $data;
 }

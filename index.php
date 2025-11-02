@@ -73,7 +73,7 @@
             <i class="fas fa-paw"></i>
             <h3>Wildlife Safaris</h3>
             <p>Experience the thrill of a safari in Sri Lanka's famous national parks. Spot leopards, elephants, and exotic birds in their natural habitat.</p>
-            <a href="#" class="btn whatsapp-link" data-text="Hi! I'm interested in your Wildlife Safari tours.">Enquire Now</a>
+            <a href="<?php echo htmlspecialchars($settings['whatsapp_number'] ?? 'N/A'); ?>" class="btn whatsapp-link" target="_blank" data-text="Hi! I'm interested in your Wildlife Safari tours.">Enquire Now</a>
           </div>
         </div>
         <!-- Tour Card 2: Tea Plantations -->
@@ -85,7 +85,7 @@
             <i class="fas fa-leaf"></i>
             <h3>Lush Tea Plantations</h3>
             <p>Journey through the rolling green hills of Sri Lanka's tea country. Visit a plantation, learn about the tea-making process, and taste world-famous Ceylon tea.</p>
-            <a href="#" class="btn whatsapp-link" data-text="Hi! I'm interested in your Tea Plantation tours.">Enquire Now</a>
+            <a href="<?php echo htmlspecialchars($settings['whatsapp_number'] ?? 'N/A'); ?>" class="btn whatsapp-link" target="_blank" data-text="Hi! I'm interested in your Tea Plantation tours.">Enquire Now</a>
           </div>
         </div>
         <!-- Tour Card 3: Ancient Temples -->
@@ -97,7 +97,7 @@
             <i class="fas fa-gopuram"></i>
             <h3>Ancient Temple Tours</h3>
             <p>Uncover the rich history and spiritual heritage of Sri Lanka by visiting ancient temples and sacred sites that have stood for centuries.</p>
-            <a href="#" class="btn whatsapp-link" data-text="Hi! I'm interested in your Ancient Temple tours.">Enquire Now</a>
+            <a href="<?php echo htmlspecialchars($settings['whatsapp_number'] ?? 'N/A'); ?>" class="btn whatsapp-link" target="_blank" data-text="Hi! I'm interested in your Ancient Temple tours.">Enquire Now</a>
           </div>
         </div>
       </div>
@@ -132,7 +132,7 @@
           <div class="service-content">
             <h3>Seamless Island Transport</h3>
             <p>Reliable, safe, and friendly transport services to get you anywhere on the island. Airport pickups, tours, and local trips available.</p>
-            <a href="#" class="btn whatsapp-link" data-text="Hi! I'm interested in your transport services.">Arrange a Ride</a>
+            <a href="https://wa.me/<?php echo htmlspecialchars($settings['whatsapp_number'] ?? 'N/A'); ?>" class="btn whatsapp-link" target="_blank" data-text="Hi! I'm interested in your transport services.">Arrange a Ride</a>
           </div>
         </div>
       </div>
@@ -150,7 +150,6 @@
           <div class="loading-spinner"></div>
           <p>Loading testimonials...</p>
         </div>
-        <!-- Testimonials are dynamically loaded by script.js -->
       </div>
     </div>
   </section>

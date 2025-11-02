@@ -1,3 +1,5 @@
+<?php session_start(); ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -51,11 +53,10 @@
 
       <nav class="nav-menu-container">
         <ul class="nav-menu">
-          <li><a href="index.php#surfing-lessons" class="nav-link"><i class="fas fa-surfboard"></i><span>Lessons</span></a></li>
-          <li><a href="index.php#explore" class="nav-link"><i class="fas fa-map-marked-alt"></i><span>Tours</span></a></li>
+          <li><a href="index.php#surfing-lessons" class="nav-link"><i class="fas fa-book"></i><span>Lessons</span></a></li>
+          <li><a href="index.php#explore" class="nav-link"><i class="fas fa-bus"></i><span>Tours</span></a></li>
           <li><a href="index.php#services" class="nav-link"><i class="fas fa-concierge-bell"></i><span>Services</span></a></li>
           <li><a href="gallery.php" class="nav-link"><i class="fas fa-images"></i><span>Gallery</span></a></li>
-          <li><a href="#contact" class="nav-link nav-cta"><i class="fas fa-paper-plane"></i><span>Contact Us</span></a></li>
         </ul>
       </nav>
 

@@ -1,138 +1,132 @@
 <?php
-// This auth-check must be the very first thing on the page
 require_once 'includes/auth-check.php';
 
-// Now, include layout files
+// Fetch dashboard stats
+$packages_count = $conn->query("SELECT COUNT(*) as count FROM packages")->fetch_assoc()['count'];
+$testimonials_count = $conn->query("SELECT COUNT(*) as count FROM testimonials")->fetch_assoc()['count'];
+$gallery_count = $conn->query("SELECT COUNT(*) as count FROM gallery")->fetch_assoc()['count'];
+$recent_package = $conn->query("SELECT * FROM packages ORDER BY created_at DESC LIMIT 1")->fetch_assoc();
+$recent_testimonial = $conn->query("SELECT * FROM testimonials ORDER BY created_at DESC LIMIT 1")->fetch_assoc();
+$settings_result = $conn->query("SELECT * FROM settings WHERE setting_key IN ('email', 'phone_number', 'whatsapp_number')");
+$settings = [];
+while ($row = $settings_result->fetch_assoc()) {
+  $settings[$row['setting_key']] = $row['setting_value'];
+}
+
 require_once 'includes/header.php';
 require_once 'includes/sidebar.php';
 ?>
+<div class="main-wrapper">
+  <header class="admin-header">
+    <div>Welcome, <strong><?php echo htmlspecialchars($_SESSION['username']); ?>!</strong></div>
+  </header>
+  <main class="main-content">
+    <?php display_message(); ?>
+    <h1>Dashboard Overview</h1>
 
-<main class="main-content">
-  <!-- Dashboard Panel -->
-  <section id="dashboard" class="content-panel active">
-    <h1>Welcome, <?php echo htmlspecialchars($_SESSION['username']); ?>!</h1>
-    <p>Select a section from the sidebar to manage your website's content.</p>
-  </section>
-
-  <!-- Carousel Management Panel (Future implementation) -->
-  <section id="carousel" class="content-panel">
-    <h2>Manage Carousel</h2>
-    <p>This feature is under development. You can manage carousel slides directly in the database for now.</p>
-  </section>
-
-  <!-- Surfing Packages Panel -->
-  <section id="packages" class="content-panel">
-    <h2>Manage Surfing Packages</h2>
-    <div id="packages-list">
-      <p>Loading packages...</p>
+    <!-- Stat Cards -->
+    <div class="stat-cards-container">
+      <div class="stat-card">
+        <div class="stat-icon" style="background-color: #007bff;"><i class="fas fa-box"></i></div>
+        <div class="stat-info">
+          <span class="stat-title">Total Packages</span>
+          <span class="stat-value"><?php echo $packages_count; ?></span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background-color: #28a745;"><i class="fas fa-comment-alt"></i></div>
+        <div class="stat-info">
+          <span class="stat-title">Total Testimonials</span>
+          <span class="stat-value"><?php echo $testimonials_count; ?></span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background-color: #ffc107;"><i class="fas fa-images"></i></div>
+        <div class="stat-info">
+          <span class="stat-title">Gallery Images</span>
+          <span class="stat-value"><?php echo $gallery_count; ?></span>
+        </div>
+      </div>
     </div>
-    <hr>
-    <h3>Add / Edit Package</h3>
-    <form id="package-form">
-      <input type="hidden" id="package-id">
-      <div class="form-group">
-        <label for="package-name">Package Name</label>
-        <input type="text" id="package-name" required>
-      </div>
-      <div class="form-group">
-        <label for="package-price">Price</label>
-        <input type="number" id="package-price" step="0.01" min="0" required>
-      </div>
-      <div class="form-group">
-        <label for="package-features">Features (comma-separated, e.g., Feature 1, Feature 2)</label>
-        <textarea id="package-features" required></textarea>
-      </div>
-      <div class="form-actions">
-        <button type="submit" class="btn-admin">Save Package</button>
-        <button type="button" id="clear-package-form" class="btn-secondary">Clear Form</button>
-      </div>
-    </form>
-  </section>
 
-  <!-- Gallery Management Panel -->
-  <section id="gallery" class="content-panel">
-    <h2>Manage Gallery</h2>
-    <form id="gallery-upload-form">
-      <h3>Upload New Image</h3>
-      <div class="form-group">
-        <label for="gallery-image-url">Image URL</label>
-        <input type="text" id="gallery-image-url" placeholder="https://images.unsplash.com/..." required>
+    <!-- Quick Actions -->
+    <div class="dashboard-section">
+      <h2>Quick Actions</h2>
+      <div class="quick-actions-container">
+        <a href="packages.php" class="quick-action-card">
+          <i class="fas fa-plus-circle"></i>
+          <span>Manage Packages</span>
+        </a>
+        <a href="gallery.php" class="quick-action-card">
+          <i class="fas fa-image"></i>
+          <span>Add Gallery Image</span>
+        </a>
+        <a href="settings.php" class="quick-action-card">
+          <i class="fas fa-cog"></i>
+          <span>Update Settings</span>
+        </a>
       </div>
-      <div class="form-group">
-        <label for="gallery-caption">Caption (Optional)</label>
-        <input type="text" id="gallery-caption">
-      </div>
-      <div class="form-group">
-        <label for="gallery-category">Category</label>
-        <select id="gallery-category" required>
-          <option value="surfing">Surfing</option>
-          <option value="tours">Tours</option>
-          <option value="shop">Shop</option>
-        </select>
-      </div>
-      <button type="submit" class="btn-admin">Add Image</button>
-    </form>
-    <hr>
-    <h3>Existing Images</h3>
-    <div id="gallery-list" class="gallery-admin-grid">
-      <p>Loading gallery...</p>
     </div>
-  </section>
 
-  <!-- Settings Panel -->
-  <section id="settings" class="content-panel">
-    <h2>Settings</h2>
-    <form id="whatsapp-form">
-      <h3>WhatsApp Number</h3>
-      <div class="form-group">
-        <label for="whatsapp-number">Number</label>
-        <input type="text" id="whatsapp-number" required>
+    <!-- Recent Activity & Site Info -->
+    <div class="dashboard-grid">
+      <div class="card">
+        <div class="card-header">
+          <h3><i class="fas fa-history"></i> Recent Activity</h3>
+        </div>
+        <ul class="info-list">
+          <?php if ($recent_package): ?>
+            <li>
+              <i class="fas fa-box info-icon"></i>
+              <div>
+                <span class="label">Latest Package Added</span>
+                <span class="value"><?php echo htmlspecialchars($recent_package['name']); ?></span>
+              </div>
+            </li>
+          <?php endif; ?>
+          <?php if ($recent_testimonial): ?>
+            <li>
+              <i class="fas fa-comment-alt info-icon"></i>
+              <div>
+                <span class="label">Latest Testimonial</span>
+                <span class="value">By <?php echo htmlspecialchars($recent_testimonial['author']); ?></span>
+              </div>
+            </li>
+          <?php endif; ?>
+          <?php if (!$recent_package && !$recent_testimonial): ?>
+            <li>No recent activity found.</li>
+          <?php endif; ?>
+        </ul>
       </div>
-      <button type="submit" class="btn-admin">Save WhatsApp Number</button>
-    </form>
-    <hr>
-    <form id="password-form">
-      <h3>Change Password</h3>
-      <div class="form-group">
-        <label for="current-password">Current Password</label>
-        <input type="password" id="current-password" required>
+      <div class="card">
+        <div class="card-header">
+          <h3><i class="fas fa-info-circle"></i> Site Information</h3>
+        </div>
+        <ul class="info-list">
+          <li>
+            <i class="fas fa-envelope info-icon"></i>
+            <div>
+              <span class="label">Email</span>
+              <span class="value"><?php echo htmlspecialchars($settings['email'] ?? 'Not Set'); ?></span>
+            </div>
+          </li>
+          <li>
+            <i class="fas fa-phone info-icon"></i>
+            <div>
+              <span class="label">Phone</span>
+              <span class="value"><?php echo htmlspecialchars($settings['phone_number'] ?? 'Not Set'); ?></span>
+            </div>
+          </li>
+          <li>
+            <i class="fab fa-whatsapp info-icon"></i>
+            <div>
+              <span class="label">WhatsApp</span>
+              <span class="value"><?php echo htmlspecialchars($settings['whatsapp_number'] ?? 'Not Set'); ?></span>
+            </div>
+          </li>
+        </ul>
       </div>
-      <div class="form-group">
-        <label for="new-password">New Password</label>
-        <input type="password" id="new-password" required>
-      </div>
-      <div class="form-group">
-        <label for="confirm-password">Confirm New Password</label>
-        <input type="password" id="confirm-password" required>
-      </div>
-      <button type="submit" class="btn-admin">Change Password</button>
-    </form>
-  </section>
-
-  <!-- Testimonials Panel -->
-  <section id="testimonials" class="content-panel">
-    <h2>Manage Testimonials</h2>
-    <div id="testimonials-list">
-      <p>Loading testimonials...</p>
     </div>
-    <hr>
-    <h3>Add / Edit Testimonial</h3>
-    <form id="testimonial-form">
-      <input type="hidden" id="testimonial-id">
-      <div class="form-group">
-        <label for="testimonial-author">Author</label>
-        <input type="text" id="testimonial-author" required>
-      </div>
-      <div class="form-group">
-        <label for="testimonial-quote">Quote</label>
-        <textarea id="testimonial-quote" required></textarea>
-      </div>
-      <div class="form-actions">
-        <button type="submit" class="btn-admin">Save Testimonial</button>
-        <button type="button" id="clear-testimonial-form" class="btn-secondary">Clear Form</button>
-      </div>
-    </form>
-  </section>
-</main>
-
+  </main>
+</div>
 <?php require_once 'includes/footer.php'; ?>
